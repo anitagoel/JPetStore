@@ -1,0 +1,108 @@
+version: '2.2'
+services:
+  # -------- Frontend microservice --------
+  frontend:
+    build:
+      context: microservice/frontend
+      dockerfile: Dockerfile
+    environment:
+      REACT_APP_BASE_IP: 52.167.202.59
+      REACT_APP_ACCOUNT_PORT: 8081
+      REACT_APP_CATALOGUE_PORT: 8082
+      REACT_APP_ORDER_PORT: 8083
+    # - DEBUG=*
+    ports:
+      - "80:3000"
+
+  # -------- Account microservice --------
+  mysql-account:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+    - "3311:3306"
+    volumes:
+      - ./database/account:/docker-entrypoint-initdb.d
+      - ./sql-low-mem.cnf:/etc/mysql/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: jpetstore
+
+  api-account:
+    restart: always
+    build:
+      context: microservice/AccountService
+      dockerfile: Dockerfile
+    mem_limit: 250m
+    environment:
+      - JAVA_OPTS="-Xmx150m"
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql-account
+    # This command waits until `mysql-account:3306` respond
+    # then runs our application
+    entrypoint: ["./wait-for-it.sh"]
+  
+  # -------- Catalog microservice --------
+  mysql-catalog:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+    - "3312:3306"
+    volumes:
+      - ./database/catalog:/docker-entrypoint-initdb.d
+      - ./sql-low-mem.cnf:/etc/mysql/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: jpetstore
+
+  api-catalog:
+    restart: always
+    build:
+      context: microservice/CatalogService
+      dockerfile: Dockerfile
+    mem_limit: 250m
+    environment:
+      - JAVA_OPTS="-Xmx150m"
+    ports:
+      - "8082:8080"
+    depends_on:
+      - mysql-catalog
+    # This command waits until `mysql-account:3306` respond
+    # then runs our application
+    entrypoint: ["./wait-for-it.sh"]
+  
+  # -------- Order microservice --------
+  mysql-order:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+    - "3313:3306"
+    volumes:
+      - ./database/order:/docker-entrypoint-initdb.d
+      - ./sql-low-mem.cnf:/etc/mysql/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: jpetstore
+
+  api-order:
+    restart: always
+    build:
+      context: microservice/OrderService
+      dockerfile: Dockerfile
+    mem_limit: 250m
+    environment:
+      - JAVA_OPTS="-Xmx150m"
+    ports:
+      - "8083:8080"
+    depends_on:
+      - mysql-order
+    # This command waits until `mysql-account:3306` respond
+    # then runs our application
+    entrypoint: ["./wait-for-it.sh"]
