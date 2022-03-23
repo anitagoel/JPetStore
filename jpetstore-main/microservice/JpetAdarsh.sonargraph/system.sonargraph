@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<ns2:softwareSystem xmlns:ns2="http://www.hello2morrow.com/sonargraph/core" id="b7f9e6313c40e492d3e95d6deca9fefb" version="11.6.0.692">
+	<description></description>
+	<module xmlns:ns4="http://www.hello2morrow.com/sonargraph/languageprovider/java" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:xsdJavaModule" name="JpetAd" id="c1d7b2d654ed4d5a195e11fa3ceec600" language="Java">
+		<description></description>
+		<rootPath xsi:type="ns4:xsdSourceRootPath" name="./AccountService/src/main/java"></rootPath>
+		<rootPath name="./AccountService/target/account-microservice-0.0.1-SNAPSHOT/WEB-INF/classes"></rootPath>
+		<rootPath name="./AccountService/target/classes"></rootPath>
+		<rootPath xsi:type="ns4:xsdSourceRootPath" name="./CatalogService/src/main/java"></rootPath>
+		<rootPath name="./CatalogService/target/classes"></rootPath>
+		<rootPath xsi:type="ns4:xsdSourceRootPath" name="./OrderService/src/main/java"></rootPath>
+	</module>
+</ns2:softwareSystem>
